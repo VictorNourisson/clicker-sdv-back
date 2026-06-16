@@ -1,9 +1,16 @@
+import {
+  ConditionType,
+  isConditionTypeBatimentQuantite,
+  extractBatimentIdFromCondition,
+} from "./condition-type";
+
 export interface ProgressionSucces {
   supsTotal: bigint;
   supsPerSecond: bigint;
   supsPerClick: bigint;
   prestigeLevel: number;
   batimentsTotal: bigint;
+  quantitesParBatiment: Map<string, bigint>;
 }
 
 export interface SuccesProps {
@@ -37,16 +44,24 @@ export class Succes {
       return false;
     }
 
+    // Vérifier si c'est une condition de quantité de bâtiment spécifique
+    if (isConditionTypeBatimentQuantite(this.conditionType)) {
+      const batimentId = extractBatimentIdFromCondition(this.conditionType);
+      const quantite =
+        progression.quantitesParBatiment.get(batimentId) ?? BigInt(0);
+      return quantite >= this.conditionValeur;
+    }
+
     switch (this.conditionType) {
-      case "sups_total":
+      case ConditionType.SUPS_TOTAL:
         return progression.supsTotal >= this.conditionValeur;
-      case "sups_per_second":
+      case ConditionType.SUPS_PER_SECOND:
         return progression.supsPerSecond >= this.conditionValeur;
-      case "sups_per_click":
+      case ConditionType.SUPS_PER_CLICK:
         return progression.supsPerClick >= this.conditionValeur;
-      case "prestige_level":
+      case ConditionType.PRESTIGE_LEVEL:
         return BigInt(progression.prestigeLevel) >= this.conditionValeur;
-      case "batiments_total":
+      case ConditionType.BATIMENTS_TOTAL:
         return progression.batimentsTotal >= this.conditionValeur;
       default:
         return false;

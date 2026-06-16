@@ -17,25 +17,34 @@ export class VerifierSuccesSession {
     private readonly sessionJeuSuccesRepository: SessionJeuSuccesRepository,
     private readonly possessionBatimentSuccesRepository: PossessionBatimentSuccesRepository,
     private readonly succesRepository: SuccesRepository,
-    private readonly succesObtenuRepository: SuccesObtenuRepository
+    private readonly succesObtenuRepository: SuccesObtenuRepository,
   ) {}
 
-  async executer(commande: VerifierSuccesSessionCommande): Promise<SuccesSession[]> {
-    const progressionSession = await this.sessionJeuSuccesRepository.trouverProgressionParUtilisateurId(
-      commande.utilisateurId
-    );
+  async executer(
+    commande: VerifierSuccesSessionCommande,
+  ): Promise<SuccesSession[]> {
+    const progressionSession =
+      await this.sessionJeuSuccesRepository.trouverProgressionParUtilisateurId(
+        commande.utilisateurId,
+      );
 
     if (progressionSession === null) {
       throw new SessionIntrouvable();
     }
 
-    const [batimentsTotal, succes, succesObtenus] = await Promise.all([
-      this.possessionBatimentSuccesRepository.calculerQuantiteTotaleParSession(
-        progressionSession.sessionId
-      ),
-      this.succesRepository.listerTous(),
-      this.succesObtenuRepository.listerParSession(progressionSession.sessionId),
-    ]);
+    const [batimentsTotal, quantitesParBatiment, succes, succesObtenus] =
+      await Promise.all([
+        this.possessionBatimentSuccesRepository.calculerQuantiteTotaleParSession(
+          progressionSession.sessionId,
+        ),
+        this.possessionBatimentSuccesRepository.obtenirQuantitesParBatimentParSession(
+          progressionSession.sessionId,
+        ),
+        this.succesRepository.listerTous(),
+        this.succesObtenuRepository.listerParSession(
+          progressionSession.sessionId,
+        ),
+      ]);
 
     const progression: ProgressionSucces = {
       supsTotal: progressionSession.supsTotal,
@@ -43,13 +52,20 @@ export class VerifierSuccesSession {
       supsPerClick: progressionSession.supsPerClick,
       prestigeLevel: progressionSession.prestigeLevel,
       batimentsTotal,
+      quantitesParBatiment,
     };
     const succesObtenusParId = new Map(
-      succesObtenus.map((succesObtenu) => [succesObtenu.succesId, succesObtenu])
+      succesObtenus.map((succesObtenu) => [
+        succesObtenu.succesId,
+        succesObtenu,
+      ]),
     );
 
     for (const item of succes) {
-      if (succesObtenusParId.has(item.id) || !item.estDebloquePar(progression)) {
+      if (
+        succesObtenusParId.has(item.id) ||
+        !item.estDebloquePar(progression)
+      ) {
         continue;
       }
 
@@ -69,7 +85,7 @@ export class VerifierSuccesSession {
         new SuccesSession({
           succes: item,
           obtenuLe: succesObtenusParId.get(item.id)?.obtenuLe ?? null,
-        })
+        }),
     );
   }
 }
