@@ -151,6 +151,48 @@ const options: swaggerJsdoc.Options = {
           },
         },
       },
+      "/session/classement": {
+        get: {
+          tags: ["Session de jeu"],
+          summary: "Récupérer le classement général (top 10 + mon rang)",
+          security: [{ bearerAuth: [] }],
+          responses: {
+            200: {
+              description: "Classement général",
+              content: {
+                "application/json": {
+                  schema: {
+                    type: "object",
+                    properties: {
+                      top10: {
+                        type: "array",
+                        items: {
+                          type: "object",
+                          properties: {
+                            rang: { type: "integer", example: 1 },
+                            username: { type: "string", example: "victor" },
+                            supsTotal: { type: "string", example: "999999" },
+                          },
+                        },
+                      },
+                      monRang: {
+                        nullable: true,
+                        type: "object",
+                        properties: {
+                          rang: { type: "integer", example: 42 },
+                          username: { type: "string", example: "moi" },
+                          supsTotal: { type: "string", example: "100" },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+            401: { description: "Token manquant ou invalide" },
+          },
+        },
+      },
       "/session/prestige": {
         post: {
           tags: ["Session de jeu"],

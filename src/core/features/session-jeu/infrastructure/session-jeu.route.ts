@@ -11,6 +11,7 @@ export function sessionJeuRouter(controller: SessionJeuController): Router {
   router.get("/", (req, res) => controller.recuperer(req, res));
   router.put("/", (req, res) => controller.sauvegarder(req, res));
   router.post("/prestige", (req, res) => controller.prestige(req, res));
+  router.get("/classement", (req, res) => controller.classement(req, res));
 
   return router;
 }
