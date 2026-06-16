@@ -11,6 +11,13 @@ import { RecupererSessionJeu } from "../core/features/session-jeu/application/re
 import { SauvegarderSessionJeu } from "../core/features/session-jeu/application/sauvegarder-session-jeu";
 import { AppliquerPrestige } from "../core/features/session-jeu/application/appliquer-prestige";
 import { SessionJeuController } from "../core/features/session-jeu/infrastructure/session-jeu.controller";
+import { BatimentPgRepository } from "../core/features/possession-batiment/infrastructure/batiment-pg.repository";
+import { PossessionBatimentPgRepository } from "../core/features/possession-batiment/infrastructure/possession-batiment-pg.repository";
+import { SessionJeuQueryPgRepository } from "../core/features/possession-batiment/infrastructure/session-jeu-query-pg.repository";
+import { AcheterBatiment } from "../core/features/possession-batiment/application/acheter-batiment";
+import { RecupererPossessionsSession } from "../core/features/possession-batiment/application/recuperer-possessions-session";
+import { ListerBatiments } from "../core/features/possession-batiment/application/lister-batiments";
+import { PossessionBatimentController } from "../core/features/possession-batiment/infrastructure/possession-batiment.controller";
 
 const utilisateurRepository = new UtilisateurPgRepository(pool);
 const hashService = new BcryptHashService();
@@ -35,4 +42,25 @@ export const sessionJeuController = new SessionJeuController(
   recupererSessionJeu,
   sauvegarderSessionJeu,
   appliquerPrestige
+);
+
+const batimentRepository = new BatimentPgRepository(pool);
+const possessionBatimentRepository = new PossessionBatimentPgRepository(pool);
+const sessionJeuQueryRepository = new SessionJeuQueryPgRepository(pool);
+
+const acheterBatiment = new AcheterBatiment(
+  sessionJeuQueryRepository,
+  batimentRepository,
+  possessionBatimentRepository
+);
+const recupererPossessionsSession = new RecupererPossessionsSession(
+  sessionJeuQueryRepository,
+  possessionBatimentRepository
+);
+const listerBatiments = new ListerBatiments(batimentRepository);
+
+export const possessionBatimentController = new PossessionBatimentController(
+  acheterBatiment,
+  recupererPossessionsSession,
+  listerBatiments
 );

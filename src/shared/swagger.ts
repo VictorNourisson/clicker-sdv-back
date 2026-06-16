@@ -161,6 +161,96 @@ const options: swaggerJsdoc.Options = {
           },
         },
       },
+      "/batiments": {
+        get: {
+          tags: ["Bâtiments"],
+          summary: "Lister tous les bâtiments disponibles",
+          security: [{ bearerAuth: [] }],
+          responses: {
+            200: {
+              description: "Catalogue des bâtiments",
+              content: {
+                "application/json": {
+                  schema: {
+                    type: "array",
+                    items: {
+                      type: "object",
+                      properties: {
+                        id: { type: "string", format: "uuid" },
+                        nom: { type: "string", example: "Ferme à cookies" },
+                        description: { type: "string", nullable: true },
+                        coutBase: { type: "integer", example: 100 },
+                        multiplicateurCps: { type: "number", example: 0.1 },
+                        ordreAffichage: { type: "integer", example: 1 },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+            401: { description: "Token manquant ou invalide" },
+          },
+        },
+      },
+      "/session/batiments": {
+        get: {
+          tags: ["Bâtiments"],
+          summary: "Récupérer les bâtiments possédés par la session",
+          security: [{ bearerAuth: [] }],
+          responses: {
+            200: {
+              description: "Liste des possessions",
+              content: {
+                "application/json": {
+                  schema: {
+                    type: "array",
+                    items: {
+                      type: "object",
+                      properties: {
+                        id: { type: "string", format: "uuid" },
+                        sessionId: { type: "string", format: "uuid" },
+                        batimentId: { type: "string", format: "uuid" },
+                        quantite: { type: "integer", example: 5 },
+                        cookiesProduitsTotal: { type: "string", example: "4200" },
+                        premierAchat: { type: "string", format: "date-time", nullable: true },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+            401: { description: "Token manquant ou invalide" },
+            404: { description: "Session introuvable" },
+          },
+        },
+      },
+      "/session/batiments/acheter": {
+        post: {
+          tags: ["Bâtiments"],
+          summary: "Acheter des bâtiments pour la session",
+          security: [{ bearerAuth: [] }],
+          requestBody: {
+            required: true,
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  required: ["batimentId", "quantite"],
+                  properties: {
+                    batimentId: { type: "string", format: "uuid", example: "uuid-du-batiment" },
+                    quantite: { type: "integer", minimum: 1, example: 1 },
+                  },
+                },
+              },
+            },
+          },
+          responses: {
+            200: { description: "Bâtiment acheté" },
+            401: { description: "Token manquant ou invalide" },
+            404: { description: "Session ou bâtiment introuvable" },
+          },
+        },
+      },
     },
   },
   apis: [],
