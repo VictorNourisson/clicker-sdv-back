@@ -18,7 +18,7 @@ export function sessionBatimentRouter(controller: PossessionBatimentController):
   router.use(authMiddleware);
 
   router.get("/", (req, res) => controller.recupererPossessions(req, res));
-  router.post("/acheter", (req, res) => controller.acheter(req, res));
+  router.put("/", (req, res) => controller.sauvegarder(req, res));
 
   return router;
 }
