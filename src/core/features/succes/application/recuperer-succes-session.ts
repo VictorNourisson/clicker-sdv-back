@@ -12,13 +12,16 @@ export class RecupererSuccesSession {
   constructor(
     private readonly sessionJeuSuccesRepository: SessionJeuSuccesRepository,
     private readonly succesRepository: SuccesRepository,
-    private readonly succesObtenuRepository: SuccesObtenuRepository
+    private readonly succesObtenuRepository: SuccesObtenuRepository,
   ) {}
 
-  async executer(commande: RecupererSuccesSessionCommande): Promise<SuccesSession[]> {
-    const progressionSession = await this.sessionJeuSuccesRepository.trouverProgressionParUtilisateurId(
-      commande.utilisateurId
-    );
+  async executer(
+    commande: RecupererSuccesSessionCommande,
+  ): Promise<SuccesSession[]> {
+    const progressionSession =
+      await this.sessionJeuSuccesRepository.trouverProgressionParUtilisateurId(
+        commande.utilisateurId,
+      );
 
     if (progressionSession === null) {
       throw new SessionIntrouvable();
@@ -26,19 +29,26 @@ export class RecupererSuccesSession {
 
     const [succes, succesObtenus] = await Promise.all([
       this.succesRepository.listerTous(),
-      this.succesObtenuRepository.listerParSession(progressionSession.sessionId),
+      this.succesObtenuRepository.listerParSession(
+        progressionSession.sessionId,
+      ),
     ]);
 
     const succesObtenusParId = new Map(
-      succesObtenus.map((succesObtenu) => [succesObtenu.succesId, succesObtenu])
+      succesObtenus.map((succesObtenu) => [
+        succesObtenu.succesId,
+        succesObtenu,
+      ]),
     );
 
-    return succes.map(
-      (item) =>
-        new SuccesSession({
-          succes: item,
-          obtenuLe: succesObtenusParId.get(item.id)?.obtenuLe ?? null,
-        })
-    );
+    return succes
+      .filter((item) => succesObtenusParId.has(item.id))
+      .map(
+        (item) =>
+          new SuccesSession({
+            succes: item,
+            obtenuLe: succesObtenusParId.get(item.id)?.obtenuLe ?? null,
+          }),
+      );
   }
 }
