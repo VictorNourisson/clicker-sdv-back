@@ -14,10 +14,18 @@ import { SessionJeuController } from "../core/features/session-jeu/infrastructur
 import { BatimentPgRepository } from "../core/features/possession-batiment/infrastructure/batiment-pg.repository";
 import { PossessionBatimentPgRepository } from "../core/features/possession-batiment/infrastructure/possession-batiment-pg.repository";
 import { SessionJeuQueryPgRepository } from "../core/features/possession-batiment/infrastructure/session-jeu-query-pg.repository";
-import { AcheterBatiment } from "../core/features/possession-batiment/application/acheter-batiment";
+import { SauvegarderPossessionBatiment } from "../core/features/possession-batiment/application/sauvegarder-possession-batiment";
 import { RecupererPossessionsSession } from "../core/features/possession-batiment/application/recuperer-possessions-session";
 import { ListerBatiments } from "../core/features/possession-batiment/application/lister-batiments";
 import { PossessionBatimentController } from "../core/features/possession-batiment/infrastructure/possession-batiment.controller";
+import { SuccesPgRepository } from "../core/features/succes/infrastructure/succes-pg.repository";
+import { SuccesObtenuPgRepository } from "../core/features/succes/infrastructure/succes-obtenu-pg.repository";
+import { SessionJeuSuccesPgRepository } from "../core/features/succes/infrastructure/session-jeu-succes-pg.repository";
+import { PossessionBatimentSuccesPgRepository } from "../core/features/succes/infrastructure/possession-batiment-succes-pg.repository";
+import { ListerSucces } from "../core/features/succes/application/lister-succes";
+import { RecupererSuccesSession } from "../core/features/succes/application/recuperer-succes-session";
+import { VerifierSuccesSession } from "../core/features/succes/application/verifier-succes-session";
+import { SuccesController } from "../core/features/succes/infrastructure/succes.controller";
 
 const utilisateurRepository = new UtilisateurPgRepository(pool);
 const hashService = new BcryptHashService();
@@ -48,7 +56,7 @@ const batimentRepository = new BatimentPgRepository(pool);
 const possessionBatimentRepository = new PossessionBatimentPgRepository(pool);
 const sessionJeuQueryRepository = new SessionJeuQueryPgRepository(pool);
 
-const acheterBatiment = new AcheterBatiment(
+const sauvegarderPossessionBatiment = new SauvegarderPossessionBatiment(
   sessionJeuQueryRepository,
   batimentRepository,
   possessionBatimentRepository
@@ -60,7 +68,31 @@ const recupererPossessionsSession = new RecupererPossessionsSession(
 const listerBatiments = new ListerBatiments(batimentRepository);
 
 export const possessionBatimentController = new PossessionBatimentController(
-  acheterBatiment,
+  sauvegarderPossessionBatiment,
   recupererPossessionsSession,
   listerBatiments
+);
+
+const succesRepository = new SuccesPgRepository(pool);
+const succesObtenuRepository = new SuccesObtenuPgRepository(pool);
+const sessionJeuSuccesRepository = new SessionJeuSuccesPgRepository(pool);
+const possessionBatimentSuccesRepository = new PossessionBatimentSuccesPgRepository(pool);
+
+const listerSucces = new ListerSucces(succesRepository);
+const recupererSuccesSession = new RecupererSuccesSession(
+  sessionJeuSuccesRepository,
+  succesRepository,
+  succesObtenuRepository
+);
+const verifierSuccesSession = new VerifierSuccesSession(
+  sessionJeuSuccesRepository,
+  possessionBatimentSuccesRepository,
+  succesRepository,
+  succesObtenuRepository
+);
+
+export const succesController = new SuccesController(
+  listerSucces,
+  recupererSuccesSession,
+  verifierSuccesSession
 );

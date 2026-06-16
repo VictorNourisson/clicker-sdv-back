@@ -209,12 +209,8 @@ const options: swaggerJsdoc.Options = {
                     items: {
                       type: "object",
                       properties: {
-                        id: { type: "string", format: "uuid" },
-                        sessionId: { type: "string", format: "uuid" },
                         batimentId: { type: "string", format: "uuid" },
                         quantite: { type: "integer", example: 5 },
-                        supsProduitsTotal: { type: "string", example: "4200" },
-                        premierAchat: { type: "string", format: "date-time", nullable: true },
                       },
                     },
                   },
@@ -226,30 +222,132 @@ const options: swaggerJsdoc.Options = {
           },
         },
       },
-      "/session/batiments/acheter": {
-        post: {
+      "/session/batiments/": {
+        put: {
           tags: ["Bâtiments"],
-          summary: "Acheter des bâtiments pour la session",
+          summary: "Sauvegarder les quantites de batiments pour la session",
           security: [{ bearerAuth: [] }],
           requestBody: {
             required: true,
             content: {
               "application/json": {
                 schema: {
-                  type: "object",
-                  required: ["batimentId", "quantite"],
-                  properties: {
-                    batimentId: { type: "string", format: "uuid", example: "uuid-du-batiment" },
-                    quantite: { type: "integer", minimum: 1, example: 1 },
+                  type: "array",
+                  items: {
+                    type: "object",
+                    required: ["batimentId", "quantite"],
+                    properties: {
+                      batimentId: { type: "string", format: "uuid" },
+                      quantite: { type: "integer", minimum: 0, example: 3 },
+                    },
                   },
                 },
               },
             },
           },
           responses: {
-            200: { description: "Bâtiment acheté" },
+            200: { description: "Possessions sauvegardees" },
             401: { description: "Token manquant ou invalide" },
-            404: { description: "Session ou bâtiment introuvable" },
+            404: { description: "Session ou batiment introuvable" },
+          },
+        },
+      },
+      "/succes": {
+        get: {
+          tags: ["Succes"],
+          summary: "Lister tous les succes disponibles",
+          security: [{ bearerAuth: [] }],
+          responses: {
+            200: {
+              description: "Catalogue des succes",
+              content: {
+                "application/json": {
+                  schema: {
+                    type: "array",
+                    items: {
+                      type: "object",
+                      properties: {
+                        id: { type: "string", format: "uuid" },
+                        nom: { type: "string", example: "Premier sup" },
+                        description: { type: "string", nullable: true },
+                        conditionType: { type: "string", nullable: true, example: "sups_total" },
+                        conditionValeur: { type: "string", nullable: true, example: "100" },
+                        icone: { type: "string", nullable: true },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+            401: { description: "Token manquant ou invalide" },
+          },
+        },
+      },
+      "/session/succes": {
+        get: {
+          tags: ["Succes"],
+          summary: "Recuperer les succes de la session",
+          security: [{ bearerAuth: [] }],
+          responses: {
+            200: {
+              description: "Liste des succes avec leur etat d'obtention",
+              content: {
+                "application/json": {
+                  schema: {
+                    type: "array",
+                    items: {
+                      type: "object",
+                      properties: {
+                        id: { type: "string", format: "uuid" },
+                        nom: { type: "string", example: "Premier sup" },
+                        description: { type: "string", nullable: true },
+                        conditionType: { type: "string", nullable: true, example: "sups_total" },
+                        conditionValeur: { type: "string", nullable: true, example: "100" },
+                        icone: { type: "string", nullable: true },
+                        obtenu: { type: "boolean", example: true },
+                        obtenuLe: { type: "string", format: "date-time", nullable: true },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+            401: { description: "Token manquant ou invalide" },
+            404: { description: "Session introuvable" },
+          },
+        },
+      },
+      "/session/succes/verifier": {
+        post: {
+          tags: ["Succes"],
+          summary: "Verifier et debloquer les succes de la session",
+          security: [{ bearerAuth: [] }],
+          responses: {
+            200: {
+              description: "Succes verifies",
+              content: {
+                "application/json": {
+                  schema: {
+                    type: "array",
+                    items: {
+                      type: "object",
+                      properties: {
+                        id: { type: "string", format: "uuid" },
+                        nom: { type: "string", example: "Premier sup" },
+                        description: { type: "string", nullable: true },
+                        conditionType: { type: "string", nullable: true, example: "sups_total" },
+                        conditionValeur: { type: "string", nullable: true, example: "100" },
+                        icone: { type: "string", nullable: true },
+                        obtenu: { type: "boolean", example: true },
+                        obtenuLe: { type: "string", format: "date-time", nullable: true },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+            401: { description: "Token manquant ou invalide" },
+            404: { description: "Session introuvable" },
           },
         },
       },

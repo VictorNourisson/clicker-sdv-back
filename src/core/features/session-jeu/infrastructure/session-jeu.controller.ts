@@ -3,6 +3,7 @@ import { CreerSessionJeu } from "../application/creer-session-jeu";
 import { RecupererSessionJeu } from "../application/recuperer-session-jeu";
 import { SauvegarderSessionJeu } from "../application/sauvegarder-session-jeu";
 import { AppliquerPrestige } from "../application/appliquer-prestige";
+import { DonneesSessionJeuInvalides } from "../domain/session-jeu.exception";
 
 export class SessionJeuController {
   constructor(
@@ -17,7 +18,7 @@ export class SessionJeuController {
 
     await this.creerSessionJeu.executer({ utilisateurId });
 
-    res.status(201).json({ message: "Session de jeu créée." });
+    res.status(201).json({ message: "Session de jeu creee." });
   }
 
   async recuperer(req: Request, res: Response): Promise<void> {
@@ -41,21 +42,21 @@ export class SessionJeuController {
   async sauvegarder(req: Request, res: Response): Promise<void> {
     const utilisateurId = req.utilisateurId as string;
     const { supsTotal, supsPerSecond, supsPerClick, supsMonney } = req.body as {
-      supsTotal: string;
-      supsPerSecond: string;
-      supsPerClick: string;
-      supsMonney: number;
+      supsTotal?: unknown;
+      supsPerSecond?: unknown;
+      supsPerClick?: unknown;
+      supsMonney?: unknown;
     };
 
     await this.sauvegarderSessionJeu.executer({
       utilisateurId,
-      supsTotal: BigInt(supsTotal),
-      supsPerSecond: BigInt(supsPerSecond),
-      supsPerClick: BigInt(supsPerClick),
-      supsMonney,
+      supsTotal: this.convertirBigInt(supsTotal),
+      supsPerSecond: this.convertirBigInt(supsPerSecond),
+      supsPerClick: this.convertirBigInt(supsPerClick),
+      supsMonney: this.convertirNombre(supsMonney),
     });
 
-    res.status(200).json({ message: "Session sauvegardée." });
+    res.status(200).json({ message: "Session sauvegardee." });
   }
 
   async prestige(req: Request, res: Response): Promise<void> {
@@ -63,6 +64,28 @@ export class SessionJeuController {
 
     await this.appliquerPrestige.executer({ utilisateurId });
 
-    res.status(200).json({ message: "Prestige appliqué." });
+    res.status(200).json({ message: "Prestige applique." });
+  }
+
+  private convertirBigInt(valeur: unknown): bigint {
+    if (typeof valeur !== "string" && typeof valeur !== "number") {
+      throw new DonneesSessionJeuInvalides();
+    }
+
+    const valeurTexte = String(valeur);
+
+    if (!/^\d+$/.test(valeurTexte)) {
+      throw new DonneesSessionJeuInvalides();
+    }
+
+    return BigInt(valeurTexte);
+  }
+
+  private convertirNombre(valeur: unknown): number {
+    if (typeof valeur !== "number" || !Number.isInteger(valeur) || valeur < 0) {
+      throw new DonneesSessionJeuInvalides();
+    }
+
+    return valeur;
   }
 }
