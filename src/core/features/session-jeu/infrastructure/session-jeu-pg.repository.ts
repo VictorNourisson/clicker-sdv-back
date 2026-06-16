@@ -5,12 +5,27 @@ import { SessionJeuRepository } from "../application/ports/session-jeu.repositor
 export class SessionJeuPgRepository implements SessionJeuRepository {
   constructor(private readonly pool: Pool) {}
 
-  async trouverParUtilisateurId(utilisateurId: string): Promise<SessionJeu | null> {
+  async trouverParUtilisateurId(
+    utilisateurId: string,
+  ): Promise<SessionJeu | null> {
     const result = await this.pool.query(
       `SELECT id, utilisateur_id, sups_total, sups_per_second, sups_per_click,
               sups_money, prestige_level, derniere_sauvegarde, created_at
        FROM session_jeu WHERE utilisateur_id = $1`,
-      [utilisateurId]
+      [utilisateurId],
+    );
+
+    if (result.rows.length === 0) return null;
+
+    return this.mapper(result.rows[0]);
+  }
+
+  async trouverParId(sessionId: string): Promise<SessionJeu | null> {
+    const result = await this.pool.query(
+      `SELECT id, utilisateur_id, sups_total, sups_per_second, sups_per_click,
+              sups_money, prestige_level, derniere_sauvegarde, created_at
+       FROM session_jeu WHERE id = $1`,
+      [sessionId],
     );
 
     if (result.rows.length === 0) return null;
@@ -33,7 +48,7 @@ export class SessionJeuPgRepository implements SessionJeuRepository {
         session.prestigeLevel,
         session.derniereSauvegarde,
         session.createdAt,
-      ]
+      ],
     );
   }
 
@@ -51,7 +66,7 @@ export class SessionJeuPgRepository implements SessionJeuRepository {
         session.prestigeLevel,
         session.derniereSauvegarde,
         session.id,
-      ]
+      ],
     );
   }
 

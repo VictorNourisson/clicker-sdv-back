@@ -19,6 +19,9 @@ export function sessionSuccesRouter(controller: SuccesController): Router {
 
   router.get("/", (req, res) => controller.recupererSession(req, res));
   router.post("/verifier", (req, res) => controller.verifierSession(req, res));
+  router.post("/ajouter", (req, res) =>
+    controller.ajouterSuccesObtenus(req, res),
+  );
 
   return router;
 }

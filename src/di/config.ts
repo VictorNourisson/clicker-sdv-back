@@ -27,18 +27,26 @@ import { PossessionBatimentSuccesPgRepository } from "../core/features/succes/in
 import { ListerSucces } from "../core/features/succes/application/lister-succes";
 import { RecupererSuccesSession } from "../core/features/succes/application/recuperer-succes-session";
 import { VerifierSuccesSession } from "../core/features/succes/application/verifier-succes-session";
+import { AjouterSuccesObtenusSession } from "../core/features/succes/application/ajouter-succes-obtenus-session";
 import { SuccesController } from "../core/features/succes/infrastructure/succes.controller";
 
 const utilisateurRepository = new UtilisateurPgRepository(pool);
 const hashService = new BcryptHashService();
 const tokenService = new JwtTokenService();
 
-const inscrireUtilisateur = new InscrireUtilisateur(utilisateurRepository, hashService);
-const connecterUtilisateur = new ConnecterUtilisateur(utilisateurRepository, hashService, tokenService);
+const inscrireUtilisateur = new InscrireUtilisateur(
+  utilisateurRepository,
+  hashService,
+);
+const connecterUtilisateur = new ConnecterUtilisateur(
+  utilisateurRepository,
+  hashService,
+  tokenService,
+);
 
 export const authentificationController = new AuthentificationController(
   inscrireUtilisateur,
-  connecterUtilisateur
+  connecterUtilisateur,
 );
 
 const sessionJeuRepository = new SessionJeuPgRepository(pool);
@@ -54,7 +62,7 @@ export const sessionJeuController = new SessionJeuController(
   recupererSessionJeu,
   sauvegarderSessionJeu,
   appliquerPrestige,
-  recupererClassement
+  recupererClassement,
 );
 
 const batimentRepository = new BatimentPgRepository(pool);
@@ -64,40 +72,46 @@ const sessionJeuQueryRepository = new SessionJeuQueryPgRepository(pool);
 const sauvegarderPossessionBatiment = new SauvegarderPossessionBatiment(
   sessionJeuQueryRepository,
   batimentRepository,
-  possessionBatimentRepository
+  possessionBatimentRepository,
 );
 const recupererPossessionsSession = new RecupererPossessionsSession(
   sessionJeuQueryRepository,
-  possessionBatimentRepository
+  possessionBatimentRepository,
 );
 const listerBatiments = new ListerBatiments(batimentRepository);
 
 export const possessionBatimentController = new PossessionBatimentController(
   sauvegarderPossessionBatiment,
   recupererPossessionsSession,
-  listerBatiments
+  listerBatiments,
 );
 
 const succesRepository = new SuccesPgRepository(pool);
 const succesObtenuRepository = new SuccesObtenuPgRepository(pool);
 const sessionJeuSuccesRepository = new SessionJeuSuccesPgRepository(pool);
-const possessionBatimentSuccesRepository = new PossessionBatimentSuccesPgRepository(pool);
+const possessionBatimentSuccesRepository =
+  new PossessionBatimentSuccesPgRepository(pool);
 
 const listerSucces = new ListerSucces(succesRepository);
 const recupererSuccesSession = new RecupererSuccesSession(
   sessionJeuSuccesRepository,
   succesRepository,
-  succesObtenuRepository
+  succesObtenuRepository,
 );
 const verifierSuccesSession = new VerifierSuccesSession(
   sessionJeuSuccesRepository,
   possessionBatimentSuccesRepository,
   succesRepository,
-  succesObtenuRepository
+  succesObtenuRepository,
+);
+const ajouterSuccesObtenusSession = new AjouterSuccesObtenusSession(
+  sessionJeuRepository,
+  succesObtenuRepository,
 );
 
 export const succesController = new SuccesController(
   listerSucces,
   recupererSuccesSession,
-  verifierSuccesSession
+  verifierSuccesSession,
+  ajouterSuccesObtenusSession,
 );

@@ -112,7 +112,10 @@ const options: swaggerJsdoc.Options = {
                       supsPerClick: { type: "string", example: "1" },
                       supsMonney: { type: "integer", example: 0 },
                       prestigeLevel: { type: "integer", example: 0 },
-                      derniereSauvegarde: { type: "string", format: "date-time" },
+                      derniereSauvegarde: {
+                        type: "string",
+                        format: "date-time",
+                      },
                       createdAt: { type: "string", format: "date-time" },
                     },
                   },
@@ -133,7 +136,12 @@ const options: swaggerJsdoc.Options = {
               "application/json": {
                 schema: {
                   type: "object",
-                  required: ["supsTotal", "supsPerSecond", "supsPerClick", "supsMonney"],
+                  required: [
+                    "supsTotal",
+                    "supsPerSecond",
+                    "supsPerClick",
+                    "supsMonney",
+                  ],
                   properties: {
                     supsTotal: { type: "string", example: "1500" },
                     supsPerSecond: { type: "string", example: "10" },
@@ -312,8 +320,16 @@ const options: swaggerJsdoc.Options = {
                         id: { type: "string", format: "uuid" },
                         nom: { type: "string", example: "Premier sup" },
                         description: { type: "string", nullable: true },
-                        conditionType: { type: "string", nullable: true, example: "sups_total" },
-                        conditionValeur: { type: "string", nullable: true, example: "100" },
+                        conditionType: {
+                          type: "string",
+                          nullable: true,
+                          example: "sups_total",
+                        },
+                        conditionValeur: {
+                          type: "string",
+                          nullable: true,
+                          example: "100",
+                        },
                         icone: { type: "string", nullable: true },
                       },
                     },
@@ -328,7 +344,7 @@ const options: swaggerJsdoc.Options = {
       "/session/succes": {
         get: {
           tags: ["Succes"],
-          summary: "Recuperer les succes de la session",
+          summary: "Recuperer les succes obtenus de la session",
           security: [{ bearerAuth: [] }],
           responses: {
             200: {
@@ -343,11 +359,23 @@ const options: swaggerJsdoc.Options = {
                         id: { type: "string", format: "uuid" },
                         nom: { type: "string", example: "Premier sup" },
                         description: { type: "string", nullable: true },
-                        conditionType: { type: "string", nullable: true, example: "sups_total" },
-                        conditionValeur: { type: "string", nullable: true, example: "100" },
+                        conditionType: {
+                          type: "string",
+                          nullable: true,
+                          example: "sups_total",
+                        },
+                        conditionValeur: {
+                          type: "string",
+                          nullable: true,
+                          example: "100",
+                        },
                         icone: { type: "string", nullable: true },
                         obtenu: { type: "boolean", example: true },
-                        obtenuLe: { type: "string", format: "date-time", nullable: true },
+                        obtenuLe: {
+                          type: "string",
+                          format: "date-time",
+                          nullable: true,
+                        },
                       },
                     },
                   },
@@ -377,11 +405,23 @@ const options: swaggerJsdoc.Options = {
                         id: { type: "string", format: "uuid" },
                         nom: { type: "string", example: "Premier sup" },
                         description: { type: "string", nullable: true },
-                        conditionType: { type: "string", nullable: true, example: "sups_total" },
-                        conditionValeur: { type: "string", nullable: true, example: "100" },
+                        conditionType: {
+                          type: "string",
+                          nullable: true,
+                          example: "sups_total",
+                        },
+                        conditionValeur: {
+                          type: "string",
+                          nullable: true,
+                          example: "100",
+                        },
                         icone: { type: "string", nullable: true },
                         obtenu: { type: "boolean", example: true },
-                        obtenuLe: { type: "string", format: "date-time", nullable: true },
+                        obtenuLe: {
+                          type: "string",
+                          format: "date-time",
+                          nullable: true,
+                        },
                       },
                     },
                   },
@@ -390,6 +430,51 @@ const options: swaggerJsdoc.Options = {
             },
             401: { description: "Token manquant ou invalide" },
             404: { description: "Session introuvable" },
+          },
+        },
+      },
+      "/session/succes/ajouter": {
+        post: {
+          tags: ["Succes"],
+          summary: "Ajouter des succes obtenus pour une session",
+          security: [{ bearerAuth: [] }],
+          requestBody: {
+            required: true,
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    sessionId: { type: "string", format: "uuid" },
+                    succesIds: {
+                      type: "array",
+                      items: { type: "string", format: "uuid" },
+                    },
+                  },
+                  required: ["sessionId", "succesIds"],
+                },
+              },
+            },
+          },
+          responses: {
+            200: {
+              description: "Succes obtenus ajoutes",
+              content: {
+                "application/json": {
+                  schema: {
+                    type: "object",
+                    properties: {
+                      message: {
+                        type: "string",
+                        example: "Succes obtenus ajoutes.",
+                      },
+                    },
+                  },
+                },
+              },
+            },
+            400: { description: "Requete invalide" },
+            401: { description: "Token manquant ou invalide" },
           },
         },
       },
