@@ -2,6 +2,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import express from "express";
+import cors from "cors";
 import swaggerUi from "swagger-ui-express";
 import {
   authentificationController,
@@ -18,6 +19,15 @@ import { swaggerSpec } from "./shared/swagger";
 
 const app = express();
 const PORT = process.env.PORT ?? 3000;
+
+app.use(cors({
+  origin: [
+    "https://csdv-frontend.onrender.com",
+    "http://localhost:5173",
+    "http://localhost:3000",
+  ],
+  credentials: true,
+}));
 
 app.use(express.json());
 
