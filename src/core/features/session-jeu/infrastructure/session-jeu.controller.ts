@@ -3,6 +3,7 @@ import { CreerSessionJeu } from "../application/creer-session-jeu";
 import { RecupererSessionJeu } from "../application/recuperer-session-jeu";
 import { SauvegarderSessionJeu } from "../application/sauvegarder-session-jeu";
 import { AppliquerPrestige } from "../application/appliquer-prestige";
+import { RecupererClassement } from "../application/recuperer-classement";
 import { DonneesSessionJeuInvalides } from "../domain/session-jeu.exception";
 
 export class SessionJeuController {
@@ -10,7 +11,8 @@ export class SessionJeuController {
     private readonly creerSessionJeu: CreerSessionJeu,
     private readonly recupererSessionJeu: RecupererSessionJeu,
     private readonly sauvegarderSessionJeu: SauvegarderSessionJeu,
-    private readonly appliquerPrestige: AppliquerPrestige
+    private readonly appliquerPrestige: AppliquerPrestige,
+    private readonly recupererClassement: RecupererClassement
   ) {}
 
   async creer(req: Request, res: Response): Promise<void> {
@@ -65,6 +67,27 @@ export class SessionJeuController {
     await this.appliquerPrestige.executer({ utilisateurId });
 
     res.status(200).json({ message: "Prestige applique." });
+  }
+
+  async classement(req: Request, res: Response): Promise<void> {
+    const utilisateurId = req.utilisateurId as string;
+
+    const resultat = await this.recupererClassement.executer({ utilisateurId });
+
+    res.status(200).json({
+      top10: resultat.top10.map((e) => ({
+        rang: e.rang,
+        username: e.username,
+        supsTotal: e.supsTotal.toString(),
+      })),
+      monRang: resultat.monRang
+        ? {
+            rang: resultat.monRang.rang,
+            username: resultat.monRang.username,
+            supsTotal: resultat.monRang.supsTotal.toString(),
+          }
+        : null,
+    });
   }
 
   private convertirBigInt(valeur: unknown): bigint {

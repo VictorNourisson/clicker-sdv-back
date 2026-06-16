@@ -10,6 +10,8 @@ import { CreerSessionJeu } from "../core/features/session-jeu/application/creer-
 import { RecupererSessionJeu } from "../core/features/session-jeu/application/recuperer-session-jeu";
 import { SauvegarderSessionJeu } from "../core/features/session-jeu/application/sauvegarder-session-jeu";
 import { AppliquerPrestige } from "../core/features/session-jeu/application/appliquer-prestige";
+import { RecupererClassement } from "../core/features/session-jeu/application/recuperer-classement";
+import { ClassementPgRepository } from "../core/features/session-jeu/infrastructure/classement-pg.repository";
 import { SessionJeuController } from "../core/features/session-jeu/infrastructure/session-jeu.controller";
 import { BatimentPgRepository } from "../core/features/possession-batiment/infrastructure/batiment-pg.repository";
 import { PossessionBatimentPgRepository } from "../core/features/possession-batiment/infrastructure/possession-batiment-pg.repository";
@@ -44,12 +46,15 @@ const creerSessionJeu = new CreerSessionJeu(sessionJeuRepository);
 const recupererSessionJeu = new RecupererSessionJeu(sessionJeuRepository);
 const sauvegarderSessionJeu = new SauvegarderSessionJeu(sessionJeuRepository);
 const appliquerPrestige = new AppliquerPrestige(sessionJeuRepository);
+const classementRepository = new ClassementPgRepository(pool);
+const recupererClassement = new RecupererClassement(classementRepository);
 
 export const sessionJeuController = new SessionJeuController(
   creerSessionJeu,
   recupererSessionJeu,
   sauvegarderSessionJeu,
-  appliquerPrestige
+  appliquerPrestige,
+  recupererClassement
 );
 
 const batimentRepository = new BatimentPgRepository(pool);
