@@ -1,0 +1,94 @@
+Table "utilisateur" {
+  "id" UUID [pk, default: `uuid_generate_v4()`]
+  "username" VARCHAR(50) [unique, not null]
+  "email" VARCHAR(255) [unique, not null]
+  "password_hash" VARCHAR(255) [not null]
+  "created_at" TIMESTAMP [default: `NOW()`]
+  "last_login" TIMESTAMP
+  "is_active" BOOLEAN [default: true]
+}
+
+Table "session_jeu" {
+  "id" UUID [pk, default: `uuid_generate_v4()`]
+  "utilisateur_id" UUID [not null]
+  "sups_total" BIGINT [default: 0]
+  "sups_per_second" BIGINT [default: 0]
+  "sups_per_click" BIGINT [default: 1]
+  "sups_money" BIGINT [default: 0]
+  "prestige_level" INT [default: 0]
+  "derniere_sauvegarde" TIMESTAMP [default: `NOW()`]
+  "created_at" TIMESTAMP [default: `NOW()`]
+}
+
+Table "batiment" {
+  "id" UUID [pk, default: `uuid_generate_v4()`]
+  "nom" VARCHAR(100) [not null]
+  "description" TEXT
+  "cout_base" INT
+  "multiplicateur_cps" FLOAT
+  "ordre_affichage" INT
+}
+
+Table "possession_batiment" {
+  "id" UUID [pk, default: `uuid_generate_v4()`]
+  "session_id" UUID [not null]
+  "batiment_id" UUID [not null]
+  "quantite" INT [default: 0]
+  "sups_produits_total" BIGINT [default: 0]
+  "premier_achat" TIMESTAMP
+
+  Indexes {
+    (session_id, batiment_id) [unique]
+  }
+}
+
+Table "succes" {
+  "id" UUID [pk, default: `uuid_generate_v4()`]
+  "nom" VARCHAR(100) [not null]
+  "description" TEXT
+  "condition_type" VARCHAR(50)
+  "condition_valeur" BIGINT
+  "icone" VARCHAR(255)
+}
+
+Table "succes_obtenu" {
+  "id" UUID [pk, default: `uuid_generate_v4()`]
+  "session_id" UUID [not null]
+  "succes_id" UUID [not null]
+  "obtenu_le" TIMESTAMP [default: `NOW()`]
+
+  Indexes {
+    (session_id, succes_id) [unique]
+  }
+}
+
+Table "classement" {
+  "id" UUID [pk, default: `uuid_generate_v4()`]
+  "utilisateur_id" UUID [not null]
+  "score" BIGINT [default: 0]
+  "rang" INT
+  "periode" VARCHAR(20)
+  "calcule_le" TIMESTAMP [default: `NOW()`]
+}
+
+Table "click_log" {
+  "id" UUID [pk, default: `uuid_generate_v4()`]
+  "session_id" UUID [not null]
+  "sups_gagnes" BIGINT
+  "created_at" TIMESTAMP [default: `NOW()`]
+  "source" VARCHAR(50)
+}
+
+Ref:"utilisateur"."id" < "session_jeu"."utilisateur_id" [delete: cascade]
+
+Ref:"session_jeu"."id" < "possession_batiment"."session_id" [delete: cascade]
+
+Ref:"batiment"."id" < "possession_batiment"."batiment_id"
+
+Ref:"session_jeu"."id" < "succes_obtenu"."session_id" [delete: cascade]
+
+Ref:"succes"."id" < "succes_obtenu"."succes_id"
+
+Ref:"utilisateur"."id" < "classement"."utilisateur_id" [delete: cascade]
+
+Ref:"session_jeu"."id" < "click_log"."session_id" [delete: cascade]

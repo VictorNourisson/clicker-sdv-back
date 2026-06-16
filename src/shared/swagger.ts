@@ -253,6 +253,105 @@ const options: swaggerJsdoc.Options = {
           },
         },
       },
+      "/succes": {
+        get: {
+          tags: ["Succes"],
+          summary: "Lister tous les succes disponibles",
+          security: [{ bearerAuth: [] }],
+          responses: {
+            200: {
+              description: "Catalogue des succes",
+              content: {
+                "application/json": {
+                  schema: {
+                    type: "array",
+                    items: {
+                      type: "object",
+                      properties: {
+                        id: { type: "string", format: "uuid" },
+                        nom: { type: "string", example: "Premier sup" },
+                        description: { type: "string", nullable: true },
+                        conditionType: { type: "string", nullable: true, example: "sups_total" },
+                        conditionValeur: { type: "string", nullable: true, example: "100" },
+                        icone: { type: "string", nullable: true },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+            401: { description: "Token manquant ou invalide" },
+          },
+        },
+      },
+      "/session/succes": {
+        get: {
+          tags: ["Succes"],
+          summary: "Recuperer les succes de la session",
+          security: [{ bearerAuth: [] }],
+          responses: {
+            200: {
+              description: "Liste des succes avec leur etat d'obtention",
+              content: {
+                "application/json": {
+                  schema: {
+                    type: "array",
+                    items: {
+                      type: "object",
+                      properties: {
+                        id: { type: "string", format: "uuid" },
+                        nom: { type: "string", example: "Premier sup" },
+                        description: { type: "string", nullable: true },
+                        conditionType: { type: "string", nullable: true, example: "sups_total" },
+                        conditionValeur: { type: "string", nullable: true, example: "100" },
+                        icone: { type: "string", nullable: true },
+                        obtenu: { type: "boolean", example: true },
+                        obtenuLe: { type: "string", format: "date-time", nullable: true },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+            401: { description: "Token manquant ou invalide" },
+            404: { description: "Session introuvable" },
+          },
+        },
+      },
+      "/session/succes/verifier": {
+        post: {
+          tags: ["Succes"],
+          summary: "Verifier et debloquer les succes de la session",
+          security: [{ bearerAuth: [] }],
+          responses: {
+            200: {
+              description: "Succes verifies",
+              content: {
+                "application/json": {
+                  schema: {
+                    type: "array",
+                    items: {
+                      type: "object",
+                      properties: {
+                        id: { type: "string", format: "uuid" },
+                        nom: { type: "string", example: "Premier sup" },
+                        description: { type: "string", nullable: true },
+                        conditionType: { type: "string", nullable: true, example: "sups_total" },
+                        conditionValeur: { type: "string", nullable: true, example: "100" },
+                        icone: { type: "string", nullable: true },
+                        obtenu: { type: "boolean", example: true },
+                        obtenuLe: { type: "string", format: "date-time", nullable: true },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+            401: { description: "Token manquant ou invalide" },
+            404: { description: "Session introuvable" },
+          },
+        },
+      },
     },
   },
   apis: [],
