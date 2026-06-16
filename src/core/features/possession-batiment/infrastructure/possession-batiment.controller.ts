@@ -33,7 +33,7 @@ export class PossessionBatimentController {
         sessionId: possession.sessionId,
         batimentId: possession.batimentId,
         quantite: possession.quantite,
-        cookiesProduitsTotal: possession.cookiesProduitsTotal.toString(),
+        supsProduitsTotal: possession.supsProduitsTotal.toString(),
         premierAchat: possession.premierAchat,
       }))
     );

@@ -1,9 +1,10 @@
 export interface SessionJeuProps {
   id: string;
   utilisateurId: string;
-  cookiesTotal: bigint;
-  cookiesPerSecond: bigint;
-  cookiesPerClick: bigint;
+  supsTotal: bigint;
+  supsPerSecond: bigint;
+  supsPerClick: bigint;
+  supsMonney: number;
   prestigeLevel: number;
   derniereSauvegarde: Date;
   createdAt: Date;
@@ -12,9 +13,10 @@ export interface SessionJeuProps {
 export class SessionJeu {
   readonly id: string;
   readonly utilisateurId: string;
-  readonly cookiesTotal: bigint;
-  readonly cookiesPerSecond: bigint;
-  readonly cookiesPerClick: bigint;
+  readonly supsTotal: bigint;
+  readonly supsPerSecond: bigint;
+  readonly supsPerClick: bigint;
+  readonly supsMonney: number;
   readonly prestigeLevel: number;
   readonly derniereSauvegarde: Date;
   readonly createdAt: Date;
@@ -22,9 +24,10 @@ export class SessionJeu {
   constructor(props: SessionJeuProps) {
     this.id = props.id;
     this.utilisateurId = props.utilisateurId;
-    this.cookiesTotal = props.cookiesTotal;
-    this.cookiesPerSecond = props.cookiesPerSecond;
-    this.cookiesPerClick = props.cookiesPerClick;
+    this.supsTotal = props.supsTotal;
+    this.supsPerSecond = props.supsPerSecond;
+    this.supsPerClick = props.supsPerClick;
+    this.supsMonney = props.supsMonney;
     this.prestigeLevel = props.prestigeLevel;
     this.derniereSauvegarde = props.derniereSauvegarde;
     this.createdAt = props.createdAt;
@@ -33,20 +36,21 @@ export class SessionJeu {
   appliquerPrestige(): SessionJeu {
     return new SessionJeu({
       ...this.toProps(),
-      cookiesTotal: 0n,
-      cookiesPerSecond: 0n,
-      cookiesPerClick: 1n,
+      supsTotal: 0n,
+      supsPerSecond: 0n,
+      supsPerClick: 1n,
       prestigeLevel: this.prestigeLevel + 1,
       derniereSauvegarde: new Date(),
     });
   }
 
-  sauvegarder(cookiesTotal: bigint, cookiesPerSecond: bigint, cookiesPerClick: bigint): SessionJeu {
+  sauvegarder(supsTotal: bigint, supsPerSecond: bigint, supsPerClick: bigint, supsMonney: number): SessionJeu {
     return new SessionJeu({
       ...this.toProps(),
-      cookiesTotal,
-      cookiesPerSecond,
-      cookiesPerClick,
+      supsTotal,
+      supsPerSecond,
+      supsPerClick,
+      supsMonney,
       derniereSauvegarde: new Date(),
     });
   }
@@ -55,9 +59,10 @@ export class SessionJeu {
     return {
       id: this.id,
       utilisateurId: this.utilisateurId,
-      cookiesTotal: this.cookiesTotal,
-      cookiesPerSecond: this.cookiesPerSecond,
-      cookiesPerClick: this.cookiesPerClick,
+      supsTotal: this.supsTotal,
+      supsPerSecond: this.supsPerSecond,
+      supsPerClick: this.supsPerClick,
+      supsMonney: this.supsMonney,
       prestigeLevel: this.prestigeLevel,
       derniereSauvegarde: this.derniereSauvegarde,
       createdAt: this.createdAt,

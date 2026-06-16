@@ -7,8 +7,8 @@ export class SessionJeuPgRepository implements SessionJeuRepository {
 
   async trouverParUtilisateurId(utilisateurId: string): Promise<SessionJeu | null> {
     const result = await this.pool.query(
-      `SELECT id, utilisateur_id, cookies_total, cookies_per_second, cookies_per_click,
-              prestige_level, derniere_sauvegarde, created_at
+      `SELECT id, utilisateur_id, sups_total, sups_per_second, sups_per_click,
+              sups_monney, prestige_level, derniere_sauvegarde, created_at
        FROM session_jeu WHERE utilisateur_id = $1`,
       [utilisateurId]
     );
@@ -20,15 +20,16 @@ export class SessionJeuPgRepository implements SessionJeuRepository {
 
   async sauvegarder(session: SessionJeu): Promise<void> {
     await this.pool.query(
-      `INSERT INTO session_jeu (id, utilisateur_id, cookies_total, cookies_per_second,
-        cookies_per_click, prestige_level, derniere_sauvegarde, created_at)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+      `INSERT INTO session_jeu (id, utilisateur_id, sups_total, sups_per_second,
+        sups_per_click, sups_monney, prestige_level, derniere_sauvegarde, created_at)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
       [
         session.id,
         session.utilisateurId,
-        session.cookiesTotal,
-        session.cookiesPerSecond,
-        session.cookiesPerClick,
+        session.supsTotal,
+        session.supsPerSecond,
+        session.supsPerClick,
+        session.supsMonney,
         session.prestigeLevel,
         session.derniereSauvegarde,
         session.createdAt,
@@ -39,13 +40,14 @@ export class SessionJeuPgRepository implements SessionJeuRepository {
   async mettreAJour(session: SessionJeu): Promise<void> {
     await this.pool.query(
       `UPDATE session_jeu
-       SET cookies_total = $1, cookies_per_second = $2, cookies_per_click = $3,
-           prestige_level = $4, derniere_sauvegarde = $5
-       WHERE id = $6`,
+       SET sups_total = $1, sups_per_second = $2, sups_per_click = $3,
+           sups_monney = $4, prestige_level = $5, derniere_sauvegarde = $6
+       WHERE id = $7`,
       [
-        session.cookiesTotal,
-        session.cookiesPerSecond,
-        session.cookiesPerClick,
+        session.supsTotal,
+        session.supsPerSecond,
+        session.supsPerClick,
+        session.supsMonney,
         session.prestigeLevel,
         session.derniereSauvegarde,
         session.id,
@@ -57,9 +59,10 @@ export class SessionJeuPgRepository implements SessionJeuRepository {
     return new SessionJeu({
       id: row["id"] as string,
       utilisateurId: row["utilisateur_id"] as string,
-      cookiesTotal: BigInt(row["cookies_total"] as string),
-      cookiesPerSecond: BigInt(row["cookies_per_second"] as string),
-      cookiesPerClick: BigInt(row["cookies_per_click"] as string),
+      supsTotal: BigInt(row["sups_total"] as string),
+      supsPerSecond: BigInt(row["sups_per_second"] as string),
+      supsPerClick: BigInt(row["sups_per_click"] as string),
+      supsMonney: row["sups_monney"] as number,
       prestigeLevel: row["prestige_level"] as number,
       derniereSauvegarde: new Date(row["derniere_sauvegarde"] as string),
       createdAt: new Date(row["created_at"] as string),

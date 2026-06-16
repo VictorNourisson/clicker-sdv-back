@@ -107,9 +107,10 @@ const options: swaggerJsdoc.Options = {
                     properties: {
                       id: { type: "string" },
                       utilisateurId: { type: "string" },
-                      cookiesTotal: { type: "string", example: "0" },
-                      cookiesPerSecond: { type: "string", example: "0" },
-                      cookiesPerClick: { type: "string", example: "1" },
+                      supsTotal: { type: "string", example: "0" },
+                      supsPerSecond: { type: "string", example: "0" },
+                      supsPerClick: { type: "string", example: "1" },
+                      supsMonney: { type: "integer", example: 0 },
                       prestigeLevel: { type: "integer", example: 0 },
                       derniereSauvegarde: { type: "string", format: "date-time" },
                       createdAt: { type: "string", format: "date-time" },
@@ -132,11 +133,12 @@ const options: swaggerJsdoc.Options = {
               "application/json": {
                 schema: {
                   type: "object",
-                  required: ["cookiesTotal", "cookiesPerSecond", "cookiesPerClick"],
+                  required: ["supsTotal", "supsPerSecond", "supsPerClick", "supsMonney"],
                   properties: {
-                    cookiesTotal: { type: "string", example: "1500" },
-                    cookiesPerSecond: { type: "string", example: "10" },
-                    cookiesPerClick: { type: "string", example: "1" },
+                    supsTotal: { type: "string", example: "1500" },
+                    supsPerSecond: { type: "string", example: "10" },
+                    supsPerClick: { type: "string", example: "1" },
+                    supsMonney: { type: "integer", example: 0 },
                   },
                 },
               },
@@ -177,7 +179,7 @@ const options: swaggerJsdoc.Options = {
                       type: "object",
                       properties: {
                         id: { type: "string", format: "uuid" },
-                        nom: { type: "string", example: "Ferme à cookies" },
+                        nom: { type: "string", example: "Ferme à sups" },
                         description: { type: "string", nullable: true },
                         coutBase: { type: "integer", example: 100 },
                         multiplicateurCps: { type: "number", example: 0.1 },
@@ -211,7 +213,7 @@ const options: swaggerJsdoc.Options = {
                         sessionId: { type: "string", format: "uuid" },
                         batimentId: { type: "string", format: "uuid" },
                         quantite: { type: "integer", example: 5 },
-                        cookiesProduitsTotal: { type: "string", example: "4200" },
+                        supsProduitsTotal: { type: "string", example: "4200" },
                         premierAchat: { type: "string", format: "date-time", nullable: true },
                       },
                     },

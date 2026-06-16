@@ -22,9 +22,10 @@ export class CreerSessionJeu {
     const session = new SessionJeu({
       id: uuidv4(),
       utilisateurId: commande.utilisateurId,
-      cookiesTotal: 0n,
-      cookiesPerSecond: 0n,
-      cookiesPerClick: 1n,
+      supsTotal: 0n,
+      supsPerSecond: 0n,
+      supsPerClick: 1n,
+      supsMonney: 0,
       prestigeLevel: 0,
       derniereSauvegarde: new Date(),
       createdAt: new Date(),

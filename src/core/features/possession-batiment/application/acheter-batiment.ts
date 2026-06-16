@@ -44,7 +44,7 @@ export class AcheterBatiment {
         sessionId,
         batimentId: commande.batimentId,
         quantite: commande.quantite,
-        cookiesProduitsTotal: 0n,
+        supsProduitsTotal: 0n,
         premierAchat: new Date(),
       });
 

@@ -28,9 +28,10 @@ export class SessionJeuController {
     res.status(200).json({
       id: session.id,
       utilisateurId: session.utilisateurId,
-      cookiesTotal: session.cookiesTotal.toString(),
-      cookiesPerSecond: session.cookiesPerSecond.toString(),
-      cookiesPerClick: session.cookiesPerClick.toString(),
+      supsTotal: session.supsTotal.toString(),
+      supsPerSecond: session.supsPerSecond.toString(),
+      supsPerClick: session.supsPerClick.toString(),
+      supsMonney: session.supsMonney,
       prestigeLevel: session.prestigeLevel,
       derniereSauvegarde: session.derniereSauvegarde,
       createdAt: session.createdAt,
@@ -39,17 +40,19 @@ export class SessionJeuController {
 
   async sauvegarder(req: Request, res: Response): Promise<void> {
     const utilisateurId = req.utilisateurId as string;
-    const { cookiesTotal, cookiesPerSecond, cookiesPerClick } = req.body as {
-      cookiesTotal: string;
-      cookiesPerSecond: string;
-      cookiesPerClick: string;
+    const { supsTotal, supsPerSecond, supsPerClick, supsMonney } = req.body as {
+      supsTotal: string;
+      supsPerSecond: string;
+      supsPerClick: string;
+      supsMonney: number;
     };
 
     await this.sauvegarderSessionJeu.executer({
       utilisateurId,
-      cookiesTotal: BigInt(cookiesTotal),
-      cookiesPerSecond: BigInt(cookiesPerSecond),
-      cookiesPerClick: BigInt(cookiesPerClick),
+      supsTotal: BigInt(supsTotal),
+      supsPerSecond: BigInt(supsPerSecond),
+      supsPerClick: BigInt(supsPerClick),
+      supsMonney,
     });
 
     res.status(200).json({ message: "Session sauvegardée." });

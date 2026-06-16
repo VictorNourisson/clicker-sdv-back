@@ -3,7 +3,7 @@ export interface PossessionBatimentProps {
   sessionId: string;
   batimentId: string;
   quantite: number;
-  cookiesProduitsTotal: bigint;
+  supsProduitsTotal: bigint;
   premierAchat: Date | null;
 }
 
@@ -12,7 +12,7 @@ export class PossessionBatiment {
   readonly sessionId: string;
   readonly batimentId: string;
   readonly quantite: number;
-  readonly cookiesProduitsTotal: bigint;
+  readonly supsProduitsTotal: bigint;
   readonly premierAchat: Date | null;
 
   constructor(props: PossessionBatimentProps) {
@@ -20,7 +20,7 @@ export class PossessionBatiment {
     this.sessionId = props.sessionId;
     this.batimentId = props.batimentId;
     this.quantite = props.quantite;
-    this.cookiesProduitsTotal = props.cookiesProduitsTotal;
+    this.supsProduitsTotal = props.supsProduitsTotal;
     this.premierAchat = props.premierAchat;
   }
 
@@ -38,7 +38,7 @@ export class PossessionBatiment {
       sessionId: this.sessionId,
       batimentId: this.batimentId,
       quantite: this.quantite,
-      cookiesProduitsTotal: this.cookiesProduitsTotal,
+      supsProduitsTotal: this.supsProduitsTotal,
       premierAchat: this.premierAchat,
     };
   }

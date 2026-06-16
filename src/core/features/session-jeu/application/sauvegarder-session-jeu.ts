@@ -3,9 +3,10 @@ import { SessionJeuRepository } from "./ports/session-jeu.repository";
 
 export type SauvegarderSessionJeuCommande = {
   utilisateurId: string;
-  cookiesTotal: bigint;
-  cookiesPerSecond: bigint;
-  cookiesPerClick: bigint;
+  supsTotal: bigint;
+  supsPerSecond: bigint;
+  supsPerClick: bigint;
+  supsMonney: number;
 };
 
 export class SauvegarderSessionJeu {
@@ -21,9 +22,10 @@ export class SauvegarderSessionJeu {
     }
 
     const sessionMiseAJour = session.sauvegarder(
-      commande.cookiesTotal,
-      commande.cookiesPerSecond,
-      commande.cookiesPerClick
+      commande.supsTotal,
+      commande.supsPerSecond,
+      commande.supsPerClick,
+      commande.supsMonney
     );
 
     await this.sessionJeuRepository.mettreAJour(sessionMiseAJour);
