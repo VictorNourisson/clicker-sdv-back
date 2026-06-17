@@ -7,7 +7,7 @@ export class BatimentPgRepository implements BatimentRepository {
 
   async trouverParId(id: string): Promise<Batiment | null> {
     const result = await this.pool.query(
-      `SELECT id, nom, description, cout_base, multiplicateur_cps, ordre_affichage
+      `SELECT id, nom, description, cout_base, multiplicateur_cps, ordre_affichage, icon
        FROM batiment WHERE id = $1`,
       [id]
     );
@@ -19,7 +19,7 @@ export class BatimentPgRepository implements BatimentRepository {
 
   async listerTous(): Promise<Batiment[]> {
     const result = await this.pool.query(
-      `SELECT id, nom, description, cout_base, multiplicateur_cps, ordre_affichage
+      `SELECT id, nom, description, cout_base, multiplicateur_cps, ordre_affichage, icon
        FROM batiment ORDER BY ordre_affichage ASC`
     );
 
@@ -34,6 +34,7 @@ export class BatimentPgRepository implements BatimentRepository {
       coutBase: row["cout_base"] as number,
       multiplicateurCps: row["multiplicateur_cps"] as number,
       ordreAffichage: row["ordre_affichage"] as number,
+      icon: row["icon"] as string | null,
     });
   }
 }
