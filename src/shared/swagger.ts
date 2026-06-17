@@ -452,15 +452,11 @@ const options: swaggerJsdoc.Options = {
             content: {
               "application/json": {
                 schema: {
-                  type: "object",
-                  properties: {
-                    sessionId: { type: "string", format: "uuid" },
-                    succesIds: {
-                      type: "array",
-                      items: { type: "string", format: "uuid" },
-                    },
+                  type: "array",
+                  items: {
+                    type: "string",
+                    format: "uuid",
                   },
-                  required: ["sessionId", "succesIds"],
                 },
               },
             },

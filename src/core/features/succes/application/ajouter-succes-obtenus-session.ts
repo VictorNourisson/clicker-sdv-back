@@ -5,7 +5,7 @@ import { SessionJeuRepository } from "../../session-jeu/application/ports/sessio
 import { SessionIntrouvable } from "../domain/succes.exception";
 
 export type AjouterSuccesObtenusSessionCommande = {
-  sessionId: string;
+  utilisateurId: string;
   succesIds: string[];
 };
 
@@ -16,16 +16,18 @@ export class AjouterSuccesObtenusSession {
   ) {}
 
   async executer(commande: AjouterSuccesObtenusSessionCommande): Promise<void> {
-    const session = await this.sessionJeuRepository.trouverParId(
-      commande.sessionId,
+    const session = await this.sessionJeuRepository.trouverParUtilisateurId(
+      commande.utilisateurId,
     );
 
     if (session === null) {
       throw new SessionIntrouvable();
     }
 
+    const sessionId = session.id;
+
     const succesObtenusExistants =
-      await this.succesObtenuRepository.listerParSession(commande.sessionId);
+      await this.succesObtenuRepository.listerParSession(sessionId);
 
     const succesIdsExistants = new Set(
       succesObtenusExistants.map((succesObtenu) => succesObtenu.succesId),
@@ -38,7 +40,7 @@ export class AjouterSuccesObtenusSession {
 
       const succesObtenu = new SuccesObtenu({
         id: uuidv4(),
-        sessionId: commande.sessionId,
+        sessionId,
         succesId,
         obtenuLe: new Date(),
       });
