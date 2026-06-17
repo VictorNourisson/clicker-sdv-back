@@ -25,6 +25,23 @@ export class AuthentificationController {
 
     const resultat = await this.connecterUtilisateur.executer({ email, password });
 
-    res.status(200).json(resultat);
+    res.cookie("token", resultat.token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    res.status(200).json({ userId: resultat.userId, username: resultat.username });
+  }
+
+  deconnecter(_req: Request, res: Response): void {
+    res.clearCookie("token", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+    });
+
+    res.status(200).json({ message: "Déconnecté." });
   }
 }
