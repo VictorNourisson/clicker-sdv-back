@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 dotenv.config();
 
-import express from "express";
+import express, { Request, Response, NextFunction } from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import swaggerUi from "swagger-ui-express";
@@ -33,7 +33,20 @@ app.use(cors({
 app.use(express.json());
 app.use(cookieParser());
 
-app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.use("/docs", (req: Request, res: Response, next: NextFunction) => {
+  const auth = req.headers["authorization"];
+  const user = process.env.SWAGGER_USER ?? "admin";
+  const password = process.env.SWAGGER_PASSWORD ?? "admin";
+  const expected = "Basic " + Buffer.from(`${user}:${password}`).toString("base64");
+
+  if (!auth || auth !== expected) {
+    res.setHeader("WWW-Authenticate", 'Basic realm="Swagger"');
+    res.status(401).send("Accès non autorisé.");
+    return;
+  }
+
+  next();
+}, swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use("/auth", authentificationRouter(authentificationController));
 app.use("/session/batiments", sessionBatimentRouter(possessionBatimentController));
