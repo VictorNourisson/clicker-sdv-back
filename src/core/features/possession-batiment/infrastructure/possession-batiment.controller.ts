@@ -43,6 +43,7 @@ export class PossessionBatimentController {
         coutBase: batiment.coutBase,
         multiplicateurCps: batiment.multiplicateurCps,
         ordreAffichage: batiment.ordreAffichage,
+        icon: batiment.icon,
       }))
     );
   }

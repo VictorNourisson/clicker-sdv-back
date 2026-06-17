@@ -242,6 +242,7 @@ const options: swaggerJsdoc.Options = {
                         coutBase: { type: "integer", example: 100 },
                         multiplicateurCps: { type: "number", example: 0.1 },
                         ordreAffichage: { type: "integer", example: 1 },
+                        icon: { type: "string", nullable: true, example: "🏠" },
                       },
                     },
                   },

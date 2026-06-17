@@ -5,6 +5,7 @@ export interface BatimentProps {
   coutBase: number;
   multiplicateurCps: number;
   ordreAffichage: number;
+  icon: string | null;
 }
 
 export class Batiment {
@@ -14,6 +15,7 @@ export class Batiment {
   readonly coutBase: number;
   readonly multiplicateurCps: number;
   readonly ordreAffichage: number;
+  readonly icon: string | null;
 
   constructor(props: BatimentProps) {
     this.id = props.id;
@@ -22,5 +24,6 @@ export class Batiment {
     this.coutBase = props.coutBase;
     this.multiplicateurCps = props.multiplicateurCps;
     this.ordreAffichage = props.ordreAffichage;
+    this.icon = props.icon;
   }
 }
