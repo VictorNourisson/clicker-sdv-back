@@ -19,13 +19,18 @@ class TokenInvalide extends AppException {
 
 export function authMiddleware(req: Request, _res: Response, next: NextFunction): void {
   const authHeader = req.headers["authorization"];
+  let token: string | undefined;
 
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+  if (authHeader && authHeader.startsWith("Bearer ")) {
+    token = authHeader.slice(7);
+  } else if (req.cookies && typeof req.cookies["token"] === "string") {
+    token = req.cookies["token"] as string;
+  }
+
+  if (!token) {
     next(new TokenManquant());
     return;
   }
-
-  const token = authHeader.slice(7);
   const secret = process.env.SUPABASE_JWT_SECRET ?? process.env.JWT_SECRET;
 
   if (!secret) {

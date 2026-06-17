@@ -17,6 +17,15 @@ const options: swaggerJsdoc.Options = {
       },
     },
     paths: {
+      "/auth/deconnexion": {
+        post: {
+          tags: ["Authentification"],
+          summary: "Se déconnecter (efface le cookie)",
+          responses: {
+            200: { description: "Déconnecté" },
+          },
+        },
+      },
       "/auth/inscription": {
         post: {
           tags: ["Authentification"],
@@ -64,13 +73,12 @@ const options: swaggerJsdoc.Options = {
           },
           responses: {
             200: {
-              description: "Connexion réussie",
+              description: "Connexion réussie (token posé en cookie HttpOnly)",
               content: {
                 "application/json": {
                   schema: {
                     type: "object",
                     properties: {
-                      token: { type: "string" },
                       userId: { type: "string" },
                       username: { type: "string" },
                     },
