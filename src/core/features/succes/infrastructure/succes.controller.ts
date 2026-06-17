@@ -39,8 +39,8 @@ export class SuccesController {
   }
 
   async ajouterSuccesObtenus(req: Request, res: Response): Promise<void> {
-    const sessionId = req.body.sessionId as string;
-    const succesIds = req.body.succesIds as string[];
+    const utilisateurId = req.utilisateurId as string;
+    const succesIds = req.body as string[];
 
     if (
       !Array.isArray(succesIds) ||
@@ -52,7 +52,7 @@ export class SuccesController {
       return;
     }
 
-    await this.ajouterSuccesObtenusSession.executer({ sessionId, succesIds });
+    await this.ajouterSuccesObtenusSession.executer({ utilisateurId, succesIds });
 
     res.status(200).json({ message: "Succes obtenus ajoutes." });
   }
