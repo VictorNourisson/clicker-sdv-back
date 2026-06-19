@@ -66,7 +66,7 @@ export class SessionJeu {
     if (tempsEcouleSecondes <= 0) return;
     
     const gainsAutomatiques = this.supsPerSecond * BigInt(tempsEcouleSecondes);
-    const clicsEstimes = this.supsPerClick * BigInt(Math.min(tempsEcouleSecondes * 30, 9000)); // Max 30 clics/sec pendant 5min
+    const clicsEstimes = this.supsPerClick * BigInt(tempsEcouleSecondes * 30);
     const gainsAttendus = gainsAutomatiques + clicsEstimes;
     const totalMaximumPossible = this.supsTotal + gainsAttendus;
     
