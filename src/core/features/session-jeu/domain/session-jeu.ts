@@ -1,3 +1,5 @@
+import { SauvegardeIncoherente } from "./session-jeu.exception";
+
 export interface SessionJeuProps {
   id: string;
   utilisateurId: string;
@@ -45,6 +47,8 @@ export class SessionJeu {
   }
 
   sauvegarder(supsTotal: bigint, supsPerSecond: bigint, supsPerClick: bigint, supsMonney: number): SessionJeu {
+    this.validerCohérenceSauvegarde(supsTotal, supsPerSecond, supsMonney);
+    
     return new SessionJeu({
       ...this.toProps(),
       supsTotal,
@@ -53,6 +57,39 @@ export class SessionJeu {
       supsMonney,
       derniereSauvegarde: new Date(),
     });
+  }
+
+  private validerCohérenceSauvegarde(nouveauTotal: bigint, supsPerSecond: bigint, nouvelArgent: number): void {
+    const tempsEcouleMs = new Date().getTime() - this.derniereSauvegarde.getTime();
+    const tempsEcouleSecondes = Math.floor(tempsEcouleMs / 1000);
+    
+    if (tempsEcouleSecondes <= 0) return;
+    
+    const gainsAttendus = this.supsPerSecond * BigInt(tempsEcouleSecondes);
+    const totalMaximumPossible = this.supsTotal + gainsAttendus;
+    
+    if (nouveauTotal > totalMaximumPossible) {
+      const difference = nouveauTotal - totalMaximumPossible;
+      throw new SauvegardeIncoherente(
+        `Le total (${nouveauTotal}) dépasse le maximum possible (${totalMaximumPossible}). Différence: ${difference}`
+      );
+    }
+    
+    if (nouveauTotal < this.supsTotal) {
+      const perte = this.supsTotal - nouveauTotal;
+      throw new SauvegardeIncoherente(
+        `Le total a diminué de ${perte}`
+      );
+    }
+    
+    const gainTotal = nouveauTotal - this.supsTotal;
+    const ratioArgentTotal = gainTotal > 0n ? nouvelArgent / Number(gainTotal) : 0;
+    
+    if (ratioArgentTotal > 10) {
+      throw new SauvegardeIncoherente(
+        `Ratio argent/total trop élevé: ${ratioArgentTotal.toFixed(2)}`
+      );
+    }
   }
 
   private toProps(): SessionJeuProps {
