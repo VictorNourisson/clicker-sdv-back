@@ -65,7 +65,9 @@ export class SessionJeu {
     
     if (tempsEcouleSecondes <= 0) return;
     
-    const gainsAttendus = this.supsPerSecond * BigInt(tempsEcouleSecondes);
+    const gainsAutomatiques = this.supsPerSecond * BigInt(tempsEcouleSecondes);
+    const clicsEstimes = this.supsPerClick * BigInt(Math.min(tempsEcouleSecondes * 30, 9000)); // Max 30 clics/sec pendant 5min
+    const gainsAttendus = gainsAutomatiques + clicsEstimes;
     const totalMaximumPossible = this.supsTotal + gainsAttendus;
     
     if (nouveauTotal > totalMaximumPossible) {
@@ -79,15 +81,6 @@ export class SessionJeu {
       const perte = this.supsTotal - nouveauTotal;
       throw new SauvegardeIncoherente(
         `Le total a diminué de ${perte}`
-      );
-    }
-    
-    const gainTotal = nouveauTotal - this.supsTotal;
-    const ratioArgentTotal = gainTotal > 0n ? nouvelArgent / Number(gainTotal) : 0;
-    
-    if (ratioArgentTotal > 10) {
-      throw new SauvegardeIncoherente(
-        `Ratio argent/total trop élevé: ${ratioArgentTotal.toFixed(2)}`
       );
     }
   }
