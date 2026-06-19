@@ -23,3 +23,11 @@ export class DonneesSessionJeuInvalides extends AppException {
     super("Les donnees de session sont invalides.");
   }
 }
+
+export class SauvegardeIncoherente extends AppException {
+  readonly statusCode = 400;
+
+  constructor(message: string) {
+    super(`Sauvegarde incohérente: ${message}`);
+  }
+}
